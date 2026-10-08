@@ -1,14 +1,16 @@
+"""
+NOVA Speaker
+"""
+
 import asyncio
 import os
 import tempfile
+import time
 
 import edge_tts
 from playsound import playsound
 
-from voice.voices import (
-    VOICES,
-    DEFAULT_LANGUAGE
-)
+from voice.voices import VOICES, DEFAULT_LANGUAGE
 
 
 class Speaker:
@@ -36,6 +38,14 @@ class Speaker:
     @staticmethod
     def speak(text):
 
+        if not text:
+            return
+
+        text = str(text).strip()
+
+        if not text:
+            return
+
         temp = tempfile.NamedTemporaryFile(
             delete=False,
             suffix=".mp3"
@@ -43,13 +53,32 @@ class Speaker:
 
         temp.close()
 
-        asyncio.run(
-            Speaker._generate(
-                text,
-                temp.name
+        try:
+
+            # Generate speech
+            asyncio.run(
+                Speaker._generate(
+                    text,
+                    temp.name
+                )
             )
-        )
 
-        playsound(temp.name)
+            # Play speech
+            playsound(temp.name)
 
-        os.remove(temp.name)
+            # Small microphone cooldown
+            time.sleep(0.5)
+
+        except Exception as e:
+
+            print(f"⚠️ Speaker Error : {e}")
+
+        finally:
+
+            # Always remove temporary audio
+            if os.path.exists(temp.name):
+
+                try:
+                    os.remove(temp.name)
+                except Exception:
+                    pass

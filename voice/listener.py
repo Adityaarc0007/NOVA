@@ -1,3 +1,7 @@
+"""
+NOVA Voice Listener
+"""
+
 import os
 import tempfile
 
@@ -23,15 +27,24 @@ class Listener:
 
         try:
 
-            self.recorder.record_until_silence(
-                temp.name,
+            # Record voice
+            result = self.recorder.record_until_silence(
+                temp.name
             )
+
+            # Nothing was recorded
+            if not result:
+                return None
 
             print("🧠 Processing...")
 
+            # Whisper transcription
             text = self.whisper.transcribe(
                 temp.name
             )
+
+            if not text:
+                return None
 
             text = text.strip()
 
@@ -42,7 +55,17 @@ class Listener:
 
             return text
 
+        except Exception as e:
+
+            print(f"⚠️ Listener Error : {e}")
+
+            return None
+
         finally:
 
             if os.path.exists(temp.name):
-                os.remove(temp.name)
+
+                try:
+                    os.remove(temp.name)
+                except Exception:
+                    pass
