@@ -1,0 +1,43 @@
+# Environment / Secrets
+.env
+.env.*
+!.env.example
+
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+
+# Virtual environment
+.venv/
+venv/
+env/
+
+# IDE
+.idea/
+.vscode/
+
+# Logs
+logs/*.log
+
+# Temporary files
+*.tmp
+*.temp
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Local models / cache
+models/cache/
+*.bin
+*.pt
+*.pth
+
+# Python test/cache
+.pytest_cache/
+.mypy_cache/
+
+# Audio files
+*.wav
+*.mp3
